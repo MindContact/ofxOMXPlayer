@@ -96,7 +96,7 @@ void ofxOMXPlayerEngine::clear()
     m_has_audio = false;
     //currentPlaybackSpeed = 0.0;
     hasNewFrame = false;
-    listener = NULL;
+    listener = nullptr;
     isOpen = false;
     duration = 0;
     totalNumFrames = 0;
@@ -1020,12 +1020,11 @@ void ofxOMXPlayerEngine::seekToFrame(int frameTarget)
     
 }
 
-void ofxOMXPlayerEngine::seekToTimeInSeconds(int timeInSeconds)
+void ofxOMXPlayerEngine::seekToTimeInSeconds(double timeInSeconds)
 {
     lock();
-    int seekTime = timeInSeconds%60;
     double oldPos = omxClock.OMXMediaTime()*1e-6;
-    m_incr = seekTime-oldPos;
+    m_incr = timeInSeconds-oldPos;
     ofLog() << "seekToTimeInSeconds: " << m_incr;
     unlock();
 }
@@ -1392,8 +1391,9 @@ void ofxOMXPlayerEngine::doExit()
 
 void ofxOMXPlayerEngine::close(bool clearTextures)//default clearTextures = false
 {
+    ofRemoveListener(ofEvents().update, this, &ofxOMXPlayerEngine::onUpdate);
+    listener = nullptr;
     lock();
-    //ofRemoveListener(ofEvents().update, this, &ofxOMXPlayerEngine::onUpdate);
     stopThread();
     //
     
